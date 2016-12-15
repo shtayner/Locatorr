@@ -229,8 +229,7 @@ angular.module('app.controllers', [])
           var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 
           function onSuccess(position) {
-            var users = ref.push();
-            users.set({
+            ref.child(result.uid).set({
               userId: result.uid,
               email: $scope.data.email,
               latitude: position.coords.latitude,
@@ -297,6 +296,7 @@ angular.module('app.controllers', [])
         if (success) {
           $scope.connected = true;
           //$scope.watchPosition(success.uid);
+          $scope.ListGroup();
           $scope.openModal(1);
           $timeout(function () {
             $scope.isExpanded = true;
@@ -334,30 +334,33 @@ angular.module('app.controllers', [])
       grps.set({
         Owner: id,
         name: $scope.data.groupName,
-        members: ({})
+        users: {
+             userId : id ,
+        }
       })
 
     }
 
-
-    grp.once("value", function (snapshot) {
-      $scope.Groups = [];
-      var i = 0;
-      snapshot.forEach(function (childSnapshot) {
-        var id = $scope.checkUser();
-        if ((childSnapshot.val().owner) == id) {
-          $scope.Groups.push({
-            name: childSnapshot.val().name,
-            owner: childSnapshot.val().owner
-          })
-        }
-        else {
-          console.log(childSnapshot.val().owner);
-        }
-
-      });
+$scope.ListGroup=function() {
+  grp.once("value", function (snapshot) {
+    $scope.Groups = [];
+    var i = 0;
+    snapshot.forEach(function (childSnapshot) {
+      var id = $scope.checkUser();
+      if ((childSnapshot.val().owner) == id) {
+        $scope.Groups.push({
+          name: childSnapshot.val().name,
+          owner: childSnapshot.val().owner
+        })
+      }
+      else {
+        console.log(childSnapshot.val().owner);
+      }
 
     });
+
+  });
+}
 
     ref.once("value", function (snapshot) {
       $scope.users = [];
