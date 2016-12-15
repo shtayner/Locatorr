@@ -296,7 +296,7 @@ angular.module('app.controllers', [])
         if (success) {
           $scope.connected = true;
           //$scope.watchPosition(success.uid);
-          $scope.ListGroup();
+          //$scope.ListGroup();
           $scope.openModal(1);
           $timeout(function () {
             $scope.isExpanded = true;
@@ -324,7 +324,7 @@ angular.module('app.controllers', [])
       }
       return (id);
     }
-    $scope.addMembers = function () {
+    $scope.addMembers = function (user) {
       // check if userId==GroupOwnerId
     }
     $scope.addGroup = function () {
@@ -341,26 +341,28 @@ angular.module('app.controllers', [])
 
     }
 
-$scope.ListGroup=function() {
   grp.once("value", function (snapshot) {
     $scope.Groups = [];
     var i = 0;
     snapshot.forEach(function (childSnapshot) {
       var id = $scope.checkUser();
-      if ((childSnapshot.val().owner) == id) {
+      console.log(childSnapshot.val());
+      console.log(childSnapshot.val().name);
+      console.log(childSnapshot.child("owner").val());
+
+
+      if ((childSnapshot.val().Owner) == id) {
         $scope.Groups.push({
           name: childSnapshot.val().name,
-          owner: childSnapshot.val().owner
+          owner: childSnapshot.val().Owner
         })
-      }
-      else {
-        console.log(childSnapshot.val().owner);
       }
 
     });
 
+
   });
-}
+
 
     ref.once("value", function (snapshot) {
       $scope.users = [];
