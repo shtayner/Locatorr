@@ -153,11 +153,27 @@
                   <i class="icon ion-location"></i> View Map
                 </a>
                 </div>
+              <input placeholder="add member email" id="addM" type="email"> </input>
+              <button id="b" class="icon ion-android-checkmark-circle" ng-click="addMembers2()"></button>
+
+             <table border="10" ng-show="false">
+                <tr id="eventName" ng-repeat=" x  in members | orderBy :'email' ">
+                  <td><br/>
+                    <h2>{{x.email}}</h2>
+                  </td>
+                </tr>
+              </table>
             </div>
-          </div>
+              </div>
         </ion-content>
       </ion-modal-view>
     </script>
+
+
+
+
+
+
 <script id="my-modal5.html" type="text/ng-template">
   <ion-view id="map" >
     <ion-header-bar class="bar-assertive">
@@ -186,16 +202,9 @@
         <input type="search" placeholder="search" ng-model="search">
       </label>
         <label class=" item item-input">
-          <table border="10">
-            <tr id="eventName" ng-repeat=" x  in users | filter : search | orderBy :'email' ">
-              <td><br/>
-                  <h2>{{x.email}}</h2>
-                <h2>{{x.userId}}</h2>
-                <button id="b" class="icon ion-android-checkmark-circle" ng-click="addMembers(x.userId)"></button>
-              </td>
-              </tr>
-            </table>
-          </label>
+
+
+        </label>
 
 
     </ion-modal-view>

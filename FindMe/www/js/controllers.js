@@ -6,6 +6,8 @@ angular.module('app.controllers', [])
   .controller('pageCtrl', function ($scope, $ionicPopup, $cordovaGeolocation, $ionicModal, $location, $stateParams, $timeout, $ionicLoading, $http, ionicMaterialInk, ionicMaterialMotion) {
       $scope.data = {};
 
+
+
       ionicMaterialInk.displayEffect();
 
 
@@ -349,28 +351,57 @@ angular.module('app.controllers', [])
       // var mem = new Firebase("https://locator-b8762.firebaseio.com/Groups" + grpId);
       var ownerId = null;
 var userId=document.getElementById("inp");
-      $scope.addMembers = function (userId) {
+      var i=0;
+      ref.once("value", function (snapshot) {
+        $scope.users = [];
+        var i = 0;
+        snapshot.forEach(function (childSnapshot) {
+          $scope.users.push({
+            email: childSnapshot.val().email,
+            userId: childSnapshot.val().userId,
+            latitude:childSnapshot.val().latitude,
+            longitude: childSnapshot.val().longitude
+          })
+        });
 
+      });
+
+      $scope.addMembers2= function () {
+
+        var input = document.getElementById("addM").value ;
+        var result = angular.equals(input,$scope.users[0].email);
+        while((result==false)&&(i<$scope.users.length)){
+          i++;
+          console.log($scope.users[i].email);
+
+          result = angular.equals(input, $scope.users[i].email);
+          console.log(result);
+        }
+        if(result==true){
+         var userId =$scope.users[i].userId;
+          var usermail=$scope.users[i].email;
         var currUser = $scope.checkUser();
         grp.once("value", function (snapshot) {
           var i = 0;
-
           snapshot.forEach(function (childSnapshot) {
 
             if ((childSnapshot.val().Owner) == currUser) {
-              var GpId=Object.keys(snapshot.val())[i++];
-              var ref2 = new Firebase("https://locator-b8762.firebaseio.com/Groups/"+GpId+"/users");
+              var grpId=Object.keys(snapshot.val())[i++];
 
-              ref2.childByAppendingPath("users").setValue(userId);
+              var ref2 = new Firebase("https://locator-b8762.firebaseio.com/Groups/"+grpId+"/users");
+             ref2.child(userId).set(usermail);
 
-
-              console.log (ref2.val());
-            }
-
-          });
+          }
 
         });
+      });
+
+        }
+        else {
+          alert("We can't find your friend , he may not have an account ! ")
+        }
       }
+
       $scope.addGroup = function () {
 
         var id = $scope.checkUser();
@@ -379,7 +410,7 @@ var userId=document.getElementById("inp");
           Owner: id,
           name: $scope.data.groupName,
           users: {
-            userId: id,
+            ownerId: id,
           }
         })
         $scope.closeModal(1);
@@ -407,17 +438,7 @@ var userId=document.getElementById("inp");
       });
 
 
-      ref.once("value", function (snapshot) {
-        $scope.users = [];
-        var i = 0;
-        snapshot.forEach(function (childSnapshot) {
-          $scope.users.push({
-            email: childSnapshot.val().email,
-            userId: childSnapshot.val().userId
-          })
-        });
 
-      });
 
 
       $scope.watchPosition = function (userId) {
