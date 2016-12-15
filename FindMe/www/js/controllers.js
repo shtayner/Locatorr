@@ -7,12 +7,7 @@ angular.module('app.controllers', [])
     $scope.data = {};
 
     ionicMaterialInk.displayEffect();
-    $scope.Groups = [];
-    $scope.addGroup = function () {
-      $scope.Groups.push({
-        Name: $scope.data.groupName
-      })
-    }
+
 
     $scope.getData = function () {
       $http({
@@ -231,7 +226,7 @@ angular.module('app.controllers', [])
             enableHighAccuracy: true
           }
 
-          var watchID = navigator.geolocation.getCurrentPosition(onSuccess,onError, options);
+          var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 
           function onSuccess(position) {
             var users = ref.push();
@@ -243,8 +238,9 @@ angular.module('app.controllers', [])
 
             })
           }
+
           function onError(error) {
-            alert('code: '    + error.code    + '\n' +'message: ' + error.message + '\n');
+            alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
           }
 
         }
@@ -342,14 +338,23 @@ angular.module('app.controllers', [])
       })
 
     }
+
+
     grp.once("value", function (snapshot) {
       $scope.Groups = [];
       var i = 0;
       snapshot.forEach(function (childSnapshot) {
-        $scope.Groups.push({
-          name: childSnapshot.val().name,
-          owner: childSnapshot.val().owner
-        })
+        var id = $scope.checkUser();
+        if ((childSnapshot.val().owner) == id) {
+          $scope.Groups.push({
+            name: childSnapshot.val().name,
+            owner: childSnapshot.val().owner
+          })
+        }
+        else {
+          console.log(childSnapshot.val().owner);
+        }
+
       });
 
     });
@@ -369,32 +374,33 @@ angular.module('app.controllers', [])
 
     $scope.watchPosition = function (userId) {
       var pos = new Firebase("https://locator-b8762.firebaseio.com/users");
-        var options = {
-          maximumAge: 3600000,
-          timeout: 3000,
-          enableHighAccuracy: true
-        }
+      var options = {
+        maximumAge: 3600000,
+        timeout: 3000,
+        enableHighAccuracy: true
+      }
 
-        var watchID = navigator.geolocation.watchPosition(onSuccess,onError, options);
+      var watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
 
-        function onSuccess(position) {
-          pos.once("value", function (snapshot) {
-            var i = 0;
-            snapshot.forEach(function (childSnapshot) {
-              if (childSnapshot.val().userId == userId) {
-                childSnapshot.update({
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude
-                });
-              }
-            });
-          });
-            console.log(pos.child(userId));
-            console.log(pos.child(userId));
-
+      function onSuccess(position) {
+        pos.once("value", function (snapshot) {
+          var i = 0;
+          snapshot.forEach(function (childSnapshot) {
+            if (childSnapshot.val().userId == userId) {
+              childSnapshot.update({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
+              });
             }
+          });
+        });
+        console.log(pos.child(userId));
+        console.log(pos.child(userId));
+
+      }
+
       function onError(error) {
-        alert('code: '    + error.code    + '\n' +'message: ' + error.message + '\n');
+        alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
       }
 
 
