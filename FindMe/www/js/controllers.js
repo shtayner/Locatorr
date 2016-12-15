@@ -110,6 +110,15 @@ angular.module('app.controllers', [])
 
       $scope.oModal5 = modal;
     });
+    $ionicModal.fromTemplateUrl('my-modal6.html', {
+      id: '6', // We need to use and ID to identify the modal that is firing the event!
+      scope: $scope,
+      backdropClickToClose: false,
+      animation: 'slide-in-up'
+    }).then(function (modal) {
+
+      $scope.oModal6 = modal;
+    });
 
     $scope.openModal = function (index) {
       if (index == 1) {
@@ -131,324 +140,356 @@ angular.module('app.controllers', [])
               if (index == 5) {
                 $scope.oModal5.show();
               }
-            }
-          }
-        }
-      }
-    }
-    $scope.closeModal = function (index) {
-      if (index == 1) $scope.oModal1.hide();
-      else {
-        if (index == 2) {
-          $scope.oModal2.hide();
-        }
+              else {
+                if (index == 6) {
 
-        else {
-          if (index == 3) {
-            $scope.oModal3.hide();
-          }
-          else {
-            if (index == 4) {
-              $scope.oModal4.hide();
-            }
-            else {
-              if (index == 5) {
-                $scope.oModal5.hide();
+                  $scope.oModal6.show();
+                }
+                }
               }
             }
           }
         }
       }
-    }
-    //LogIn with Django
-    $scope.logIn = function () {
+      $scope.closeModal = function (index) {
+        if (index == 1) $scope.oModal1.hide();
+        else {
+          if (index == 2) {
+            $scope.oModal2.hide();
+          }
 
-      $scope.getData();
+          else {
+            if (index == 3) {
+              $scope.oModal3.hide();
+            }
+            else {
+              if (index == 4) {
+                $scope.oModal4.hide();
+              }
+              else {
+                if (index == 5) {
+                  $scope.oModal5.hide();
+                }
+                else {
+                  if (index == 6) {
 
-    }
-    $scope.go = function (path) {
-      $ionicLoading.show({
-        template: '<div class="icon ion-loading-a"></div> Please wait while we load the map'
-
-      });
-      $timeout(function () {
-        $scope.closeModal(1);
-        $location.path(path);
-        $ionicLoading.hide();
-
-      }, 2000);
-
-    };
-
-
-    /*$scope.createGroup=function(){
-     createGroups.AddGroupToDB($scope.group);
-     }*/
-
-    $scope.displayMap = function () {
-
-      $ionicLoading.show({
-        template: '<div class="icon ion-loading-a"></div> Please wait while we load the map'
-      });
-      $timeout(function () {
-        $ionicLoading.hide();
-
-      }, 2000);
-
-      $scope.openModal(5);
-      $scope.ShowMap();
-    }
-
-
-    var ref = new Firebase("https://locator-b8762.firebaseio.com/users");
-    var grp = new Firebase("https://locator-b8762.firebaseio.com/Groups");
-    var members = new Firebase("https://locator-b8762.firebaseio.com/Groups/members");
-    $scope.signUp = function () {
-      firebase.auth().createUserWithEmailAndPassword($scope.data.email, $scope.data.password).catch(function (error) {
-        // Handle Errors here.
-        if (error) {
-          switch (error.code) {
-            case "EMAIL_TAKEN":
-              alert("The new user account cannot be created because the email is already in use.");
-              break;
-            case "INVALID_EMAIL":
-              alert("The specified email is not a valid email.");
-              break;
-            default:
-              alert("Error creating user:", error);
+                    $scope.oModal6.hide();
+                  }
+                }
+              }
+            }
           }
         }
-      }).then(function (result) {
-        if (result) {
-          $scope.closeModal(2);
-          var options = {
-            maximumAge: 3600000,
-            enableHighAccuracy: true
+      }
+      //LogIn with Django
+      $scope.logIn = function () {
+
+        $scope.getData();
+
+      }
+      $scope.go = function (path) {
+        $ionicLoading.show({
+          template: '<div class="icon ion-loading-a"></div> Please wait while we load the map'
+
+        });
+        $timeout(function () {
+          $scope.closeModal(1);
+          $location.path(path);
+          $ionicLoading.hide();
+
+        }, 2000);
+
+      };
+
+
+      /*$scope.createGroup=function(){
+       createGroups.AddGroupToDB($scope.group);
+       }*/
+
+      $scope.displayMap = function () {
+
+        $ionicLoading.show({
+          template: '<div class="icon ion-loading-a"></div> Please wait while we load the map'
+        });
+        $timeout(function () {
+          $ionicLoading.hide();
+
+        }, 2000);
+
+        $scope.openModal(5);
+        $scope.ShowMap();
+      }
+
+
+      var ref = new Firebase("https://locator-b8762.firebaseio.com/users");
+      var grp = new Firebase("https://locator-b8762.firebaseio.com/Groups");
+      var members = new Firebase("https://locator-b8762.firebaseio.com/Groups/users");
+      $scope.signUp = function () {
+        firebase.auth().createUserWithEmailAndPassword($scope.data.email, $scope.data.password).catch(function (error) {
+          // Handle Errors here.
+          if (error) {
+            switch (error.code) {
+              case "EMAIL_TAKEN":
+                alert("The new user account cannot be created because the email is already in use.");
+                break;
+              case "INVALID_EMAIL":
+                alert("The specified email is not a valid email.");
+                break;
+              default:
+                alert("Error creating user:", error);
+            }
           }
+        }).then(function (result) {
+          if (result) {
+            $scope.closeModal(2);
+            var options = {
+              maximumAge: 3600000,
+              enableHighAccuracy: true
+            }
 
-          var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+            var watchID = navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
 
-          function onSuccess(position) {
-            ref.child(result.uid).set({
-              userId: result.uid,
-              email: $scope.data.email,
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude
+            function onSuccess(position) {
+              ref.child(result.uid).set({
+                userId: result.uid,
+                email: $scope.data.email,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude
 
+              })
+            }
+
+            function onError(error) {
+              alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+            }
+
+          }
+        });
+      }
+//Sign In with Firebase
+      $scope.signIn = function () {
+        $scope.connected = false;
+        firebase.auth().signInWithEmailAndPassword($scope.data.email, $scope.data.pass).catch(function (error) {
+          if (error) {
+            switch (error.code) {
+              case "auth/user-not-found":
+                alert("sign up to create an account");
+                break;
+
+              case "auth/wrong-password":
+                var myPopup = $ionicPopup.show({
+                  title: 'invalid password ',
+                  subTitle: 'forget your password ?',
+                  scope: $scope,
+                  buttons: [
+                    {
+                      text: 'Reset',
+                      type: 'button-assertive',
+                      onTap: function (e) {
+                        var auth = firebase.auth();
+                        var emailAddress = $scope.data.email;
+
+                        auth.sendPasswordResetEmail(emailAddress).then(function () {
+                          alert("reset email sent , check your mailBox");
+                        }, function (error) {
+                        });
+                      }
+                    },
+                    {
+                      text: '<b>retry</b>',
+                    }
+                  ]
+                });
+
+                myPopup.then(function (res) {
+                  console.log('Tapped!', res);
+                })
+
+                break;
+              case "auth/invalid-email":
+                alert("invalid email");
+                break;
+              default:
+                alert("Error signing in user:", error);
+            }
+          }
+        }).then(function (success) {
+          if (success) {
+            $scope.connected = true;
+            //$scope.watchPosition(success.uid);
+            //$scope.ListGroup();
+            $scope.openModal(1);
+            $timeout(function () {
+              $scope.isExpanded = true;
+            }, 300);
+
+            // Set Motion
+            ionicMaterialMotion.fadeSlideInRight();
+
+            // Set Ink
+            ionicMaterialInk.displayEffect();
+          }
+        });
+
+      }
+
+      var options = {
+        timeout: 10000, enableHighAccuracy: true, maximumAge: 3600000
+      };
+
+      $scope.checkUser = function () {
+        var user = firebase.auth().currentUser;
+        if (user != null) {
+          email = user.email;
+          id = user.uid;
+        }
+        return (id);
+      }
+
+     // var mem = new Firebase("https://locator-b8762.firebaseio.com/Groups" + grpId);
+      var ownerId = null;
+
+      $scope.addMembers = function (grpId, email) {
+
+        /*//var id = $scope.checkUser();
+         ref.once("value", function (snapshot) {
+
+
+         var i = 0;
+         snapshot.forEach(function (childSnapshot) {
+         snapshot.forEach
+         childSnapshot.set({
+         users: {
+         userI
+         }
+         });
+         }
+         });*/
+
+
+      }
+      $scope.addGroup = function () {
+
+        var id = $scope.checkUser();
+        var grps = grp.push();
+        grps.set({
+          Owner: id,
+          name: $scope.data.groupName,
+          users: {
+            userId: id,
+          }
+        })
+        $scope.closeModal(1);
+        window.location.reload(true);
+        $scope.openModal(1);
+
+      }
+
+      grp.once("value", function (snapshot) {
+        $scope.Groups = [];
+        var i = 0;
+        snapshot.forEach(function (childSnapshot) {
+          var id = $scope.checkUser();
+          if ((childSnapshot.val().Owner) == id) {
+            $scope.Groups.push({
+              name: childSnapshot.val().name,
+              owner: childSnapshot.val().Owner,
+              grpId: Object.keys(snapshot.val())[i++]
             })
           }
 
-          function onError(error) {
-            alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
-          }
-
-        }
-      });
-    }
-//Sign In with Firebase
-    $scope.signIn = function () {
-      $scope.connected = false;
-      firebase.auth().signInWithEmailAndPassword($scope.data.email, $scope.data.pass).catch(function (error) {
-        if (error) {
-          switch (error.code) {
-            case "auth/user-not-found":
-              alert("sign up to create an account");
-              break;
-
-            case "auth/wrong-password":
-              var myPopup = $ionicPopup.show({
-                title: 'invalid password ',
-                subTitle: 'forget your password ?',
-                scope: $scope,
-                buttons: [
-                  {
-                    text: 'Reset',
-                    type: 'button-assertive',
-                    onTap: function (e) {
-                      var auth = firebase.auth();
-                      var emailAddress = $scope.data.email;
-
-                      auth.sendPasswordResetEmail(emailAddress).then(function () {
-                        alert("reset email sent , check your mailBox");
-                      }, function (error) {
-                      });
-                    }
-                  },
-                  {
-                    text: '<b>retry</b>',
-                  }
-                ]
-              });
-
-              myPopup.then(function (res) {
-                console.log('Tapped!', res);
-              })
-
-              break;
-            case "auth/invalid-email":
-              alert("invalid email");
-              break;
-            default:
-              alert("Error signing in user:", error);
-          }
-        }
-      }).then(function (success) {
-        if (success) {
-          $scope.connected = true;
-          //$scope.watchPosition(success.uid);
-          //$scope.ListGroup();
-          $scope.openModal(1);
-          $timeout(function () {
-            $scope.isExpanded = true;
-          }, 300);
-
-          // Set Motion
-          ionicMaterialMotion.fadeSlideInRight();
-
-          // Set Ink
-          ionicMaterialInk.displayEffect();
-        }
-      });
-
-    }
-
-    var options = {
-      timeout: 10000, enableHighAccuracy: true, maximumAge: 3600000
-    };
-
-    $scope.checkUser = function () {
-      var user = firebase.auth().currentUser;
-      if (user != null) {
-        email = user.email;
-        id = user.uid;
-      }
-      return (id);
-    }
-    $scope.addMembers = function (user) {
-      // check if userId==GroupOwnerId
-    }
-    $scope.addGroup = function () {
-
-      var id = $scope.checkUser();
-      var grps = grp.push();
-      grps.set({
-        Owner: id,
-        name: $scope.data.groupName,
-        users: {
-             userId : id ,
-        }
-      })
-
-    }
-
-  grp.once("value", function (snapshot) {
-    $scope.Groups = [];
-    var i = 0;
-    snapshot.forEach(function (childSnapshot) {
-      var id = $scope.checkUser();
-      console.log(childSnapshot.val());
-      console.log(childSnapshot.val().name);
-      console.log(childSnapshot.child("owner").val());
-
-
-      if ((childSnapshot.val().Owner) == id) {
-        $scope.Groups.push({
-          name: childSnapshot.val().name,
-          owner: childSnapshot.val().Owner
-        })
-      }
-
-    });
-
-
-  });
-
-
-    ref.once("value", function (snapshot) {
-      $scope.users = [];
-      var i = 0;
-      snapshot.forEach(function (childSnapshot) {
-        $scope.users.push({
-          name: childSnapshot.val().name,
-          userId: childSnapshot.val().userId
-        })
-      });
-
-    });
-
-
-    $scope.watchPosition = function (userId) {
-      var pos = new Firebase("https://locator-b8762.firebaseio.com/users");
-      var options = {
-        maximumAge: 3600000,
-        timeout: 3000,
-        enableHighAccuracy: true
-      }
-
-      var watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
-
-      function onSuccess(position) {
-        pos.once("value", function (snapshot) {
-          var i = 0;
-          snapshot.forEach(function (childSnapshot) {
-            if (childSnapshot.val().userId == userId) {
-              childSnapshot.update({
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-              });
-            }
-          });
         });
-        console.log(pos.child(userId));
-        console.log(pos.child(userId));
-
-      }
-
-      function onError(error) {
-        alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
-      }
 
 
-    }
+      });
 
-    $scope.ShowMap = function () {
-      $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
-        var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-        var mapOptions = {
-          center: latLng,
-          zoom: 6,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
 
-        $scope.map = new google.maps.Map(document.getElementById("ggmap"), mapOptions);
-        //To add a marker
-        var myImage = 'img/gps.png';
-        google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-          var marker = new google.maps.Marker({
-            map: $scope.map,
-            animation: google.maps.Animation.DROP,
-            position: latLng,
-            icon: myImage,
-          });
-          //on click zoom
-          google.maps.event.addListener(marker, 'click', function () {
-            $scope.map.setZoom(14);
-            $scope.map.setCenter(marker.getPosition());
-          });
+      ref.once("value", function (snapshot) {
+        $scope.users = [];
+        var i = 0;
+        snapshot.forEach(function (childSnapshot) {
+          $scope.users.push({
+            email: childSnapshot.val().email,
+            userId: childSnapshot.val().userId
+          })
         });
+
+      });
+
+
+      $scope.watchPosition = function (userId) {
+        var pos = new Firebase("https://locator-b8762.firebaseio.com/users");
+        var options = {
+          maximumAge: 3600000,
+          timeout: 3000,
+          enableHighAccuracy: true
+        }
+
+        var watchID = navigator.geolocation.watchPosition(onSuccess, onError, options);
+
+        function onSuccess(position) {
+          pos.once("value", function (snapshot) {
+            var i = 0;
+            snapshot.forEach(function (childSnapshot) {
+              if (childSnapshot.val().userId == userId) {
+                childSnapshot.update({
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude
+                });
+              }
+            });
+          });
+          console.log(pos.child(userId));
+          console.log(pos.child(userId));
+
+        }
+
+        function onError(error) {
+          alert('code: ' + error.code + '\n' + 'message: ' + error.message + '\n');
+        }
+
+
+      }
+
+      $scope.ShowMap = function () {
+        $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
+          var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          var mapOptions = {
+            center: latLng,
+            zoom: 6,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+
+          $scope.map = new google.maps.Map(document.getElementById("ggmap"), mapOptions);
+          //To add a marker
+          var myImage = 'img/gps.png';
+          google.maps.event.addListenerOnce($scope.map, 'idle', function () {
+            var marker = new google.maps.Marker({
+              map: $scope.map,
+              animation: google.maps.Animation.DROP,
+              position: latLng,
+              icon: myImage,
+            });
+            //on click zoom
+            google.maps.event.addListener(marker, 'click', function () {
+              $scope.map.setZoom(14);
+              $scope.map.setCenter(marker.getPosition());
+            });
+          });
 
 //addMarker
-        var latln = new google.maps.LatLng(34.7452, 10.7613);
-        google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-          var marker = new google.maps.Marker({
-            map: $scope.map,
-            animation: google.maps.Animation.DROP,
-            position: latln
-          });
+          var latln = new google.maps.LatLng(34.7452, 10.7613);
+          google.maps.event.addListenerOnce($scope.map, 'idle', function () {
+            var marker = new google.maps.Marker({
+              map: $scope.map,
+              animation: google.maps.Animation.DROP,
+              position: latln
+            });
 
+          })
         })
-      })
-    }
+      }
 
-  })
+    }
+    )
 
