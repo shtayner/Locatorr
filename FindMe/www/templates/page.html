@@ -177,7 +177,7 @@
    <script id="my-modal6.html" type="text/ng-template">
     <ion-modal-view id="mem" >
       <ion-header-bar class="bar-assertive">
-        <h1 class="title">Map</h1>
+        <h1 class="title">members</h1>
         <button class="button button-dark button-stable" ng-click="closeModal(6)">back</button>
       </ion-header-bar>
       <ion-content ng-class="{expanded:$scope.isExpanded}">
@@ -185,18 +185,18 @@
         <i class="icon ion-search placeholder-icon"></i>
         <input type="search" placeholder="search" ng-model="search">
       </label>
-      <div>
         <label class=" item item-input">
           <table border="10">
             <tr id="eventName" ng-repeat=" x  in users | filter : search | orderBy :'email' ">
               <td><br/>
                   <h2>{{x.email}}</h2>
-            </td>
-              <i class="icon ion-android-checkmark-circle" ng-click="addMembers(x.userId)"></i>
-            </tr>
+                <h2>{{x.userId}}</h2>
+                <button id="b" class="icon ion-android-checkmark-circle" ng-click="addMembers(x.userId)"></button>
+              </td>
+              </tr>
             </table>
           </label>
-        </div>
+
 
     </ion-modal-view>
 

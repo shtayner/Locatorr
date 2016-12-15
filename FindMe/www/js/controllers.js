@@ -4,147 +4,147 @@ angular.module('app.controllers', [])
    })*/
 
   .controller('pageCtrl', function ($scope, $ionicPopup, $cordovaGeolocation, $ionicModal, $location, $stateParams, $timeout, $ionicLoading, $http, ionicMaterialInk, ionicMaterialMotion) {
-    $scope.data = {};
+      $scope.data = {};
 
-    ionicMaterialInk.displayEffect();
+      ionicMaterialInk.displayEffect();
 
 
-    $scope.getData = function () {
-      $http({
-        method: 'post',
-        url: 'http://127.0.0.1:8000/accounts/login/',
-        data: {
-          'username': $scope.data.name,
-          'password': $scope.data.pass
-        }
-      }).then(function successCallback(response) {
-        if (response.data.includes("username")) {
-          alert("error");
+      $scope.getData = function () {
+        $http({
+          method: 'post',
+          url: 'http://127.0.0.1:8000/accounts/login/',
+          data: {
+            'username': $scope.data.name,
+            'password': $scope.data.pass
+          }
+        }).then(function successCallback(response) {
+          if (response.data.includes("username")) {
+            alert("error");
 
-        }
+          }
 
-        else alert("success");
-        console.log(response);
-        //checkuser
-        $scope.openModal(1);
-        // Set Header
-        $scope.isExpanded = false;
+          else alert("success");
+          console.log(response);
+          //checkuser
+          $scope.openModal(1);
+          // Set Header
+          $scope.isExpanded = false;
 
-        // Set Motion
-        $timeout(function () {
-          ionicMaterialMotion.slideUp({
-            selector: '.slide-up'
-          });
-        }, 300);
+          // Set Motion
+          $timeout(function () {
+            ionicMaterialMotion.slideUp({
+              selector: '.slide-up'
+            });
+          }, 300);
 
-        $timeout(function () {
-          ionicMaterialMotion.fadeSlideInRight({
-            startVelocity: 3000
-          });
-        }, 700);
+          $timeout(function () {
+            ionicMaterialMotion.fadeSlideInRight({
+              startVelocity: 3000
+            });
+          }, 700);
 
-        // Set Ink
-        ionicMaterialInk.displayEffect();
-      }, function (response) {
+          // Set Ink
+          ionicMaterialInk.displayEffect();
+        }, function (response) {
 
-        alert("error" + $scope.data.name);
-      });
-    }
-
-    $scope.get = function () {
-      /*$http({
-       method:'get',
-       url: ApiEndpoint.url='index/api/welcome',
-       }).then(function successCallback(response){
-       console.log(response.data);
-
-       });*/
-      $http({
-        method: 'get',
-        url: 'http://127.0.0.1:8000/index/api/welcome',
-      }).then(function successCallback(response) {
-        console.log(response.data);
-      });
-
-    }
-    $ionicModal.fromTemplateUrl('my-modal.html', {
-      id: '1', // We need to use and ID to identify the modal that is firing the event!
-      scope: $scope,
-      backdropClickToClose: false,
-      animation: 'slide-in-up'
-    }).then(function (modal) {
-      $scope.oModal1 = modal;
-    });
-    $ionicModal.fromTemplateUrl('my-modal2.html', {
-      id: '2', // We need to use and ID to identify the modal that is firing the event!
-      scope: $scope,
-      backdropClickToClose: false,
-      animation: 'slide-in-up'
-    }).then(function (modal) {
-      $scope.oModal2 = modal;
-    });
-    $ionicModal.fromTemplateUrl('my-modal3.html', {
-      id: '3', // We need to use and ID to identify the modal that is firing the event!
-      scope: $scope,
-      backdropClickToClose: false,
-      animation: 'slide-in-up'
-    }).then(function (modal) {
-
-      $scope.oModal3 = modal;
-    });
-    $ionicModal.fromTemplateUrl('my-modal4.html', {
-      id: '4', // We need to use and ID to identify the modal that is firing the event!
-      scope: $scope,
-      backdropClickToClose: false,
-      animation: 'slide-in-up'
-    }).then(function (modal) {
-
-      $scope.oModal4 = modal;
-    });
-    $ionicModal.fromTemplateUrl('my-modal5.html', {
-      id: '5', // We need to use and ID to identify the modal that is firing the event!
-      scope: $scope,
-      backdropClickToClose: false,
-      animation: 'slide-in-up'
-    }).then(function (modal) {
-
-      $scope.oModal5 = modal;
-    });
-    $ionicModal.fromTemplateUrl('my-modal6.html', {
-      id: '6', // We need to use and ID to identify the modal that is firing the event!
-      scope: $scope,
-      backdropClickToClose: false,
-      animation: 'slide-in-up'
-    }).then(function (modal) {
-
-      $scope.oModal6 = modal;
-    });
-
-    $scope.openModal = function (index) {
-      if (index == 1) {
-        $scope.oModal1.show();
+          alert("error" + $scope.data.name);
+        });
       }
-      else {
-        if (index == 2) {
-          $scope.oModal2.show();
+
+      $scope.get = function () {
+        /*$http({
+         method:'get',
+         url: ApiEndpoint.url='index/api/welcome',
+         }).then(function successCallback(response){
+         console.log(response.data);
+
+         });*/
+        $http({
+          method: 'get',
+          url: 'http://127.0.0.1:8000/index/api/welcome',
+        }).then(function successCallback(response) {
+          console.log(response.data);
+        });
+
+      }
+      $ionicModal.fromTemplateUrl('my-modal.html', {
+        id: '1', // We need to use and ID to identify the modal that is firing the event!
+        scope: $scope,
+        backdropClickToClose: false,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+        $scope.oModal1 = modal;
+      });
+      $ionicModal.fromTemplateUrl('my-modal2.html', {
+        id: '2', // We need to use and ID to identify the modal that is firing the event!
+        scope: $scope,
+        backdropClickToClose: false,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+        $scope.oModal2 = modal;
+      });
+      $ionicModal.fromTemplateUrl('my-modal3.html', {
+        id: '3', // We need to use and ID to identify the modal that is firing the event!
+        scope: $scope,
+        backdropClickToClose: false,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+
+        $scope.oModal3 = modal;
+      });
+      $ionicModal.fromTemplateUrl('my-modal4.html', {
+        id: '4', // We need to use and ID to identify the modal that is firing the event!
+        scope: $scope,
+        backdropClickToClose: false,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+
+        $scope.oModal4 = modal;
+      });
+      $ionicModal.fromTemplateUrl('my-modal5.html', {
+        id: '5', // We need to use and ID to identify the modal that is firing the event!
+        scope: $scope,
+        backdropClickToClose: false,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+
+        $scope.oModal5 = modal;
+      });
+      $ionicModal.fromTemplateUrl('my-modal6.html', {
+        id: '6', // We need to use and ID to identify the modal that is firing the event!
+        scope: $scope,
+        backdropClickToClose: false,
+        animation: 'slide-in-up'
+      }).then(function (modal) {
+
+        $scope.oModal6 = modal;
+      });
+
+      $scope.openModal = function (index) {
+        if (index == 1) {
+          $scope.oModal1.show();
         }
         else {
-          if (index == 3) {
-            $scope.oModal3.show();
+          if (index == 2) {
+            $scope.oModal2.show();
           }
           else {
-            if (index == 4) {
-              $scope.oModal4.show();
+            if (index == 3) {
+              $scope.oModal3.show();
             }
             else {
-              if (index == 5) {
-                $scope.oModal5.show();
+              if (index == 4) {
+                $scope.oModal4.show();
               }
               else {
-                if (index == 6) {
-
-                  $scope.oModal6.show();
+                if (index == 5) {
+                  $scope.oModal5.show();
                 }
+                else {
+                  if (index == 6) {
+
+                    $scope.oModal6.show();
+                  }
                 }
               }
             }
@@ -346,27 +346,30 @@ angular.module('app.controllers', [])
         return (id);
       }
 
-     // var mem = new Firebase("https://locator-b8762.firebaseio.com/Groups" + grpId);
+      // var mem = new Firebase("https://locator-b8762.firebaseio.com/Groups" + grpId);
       var ownerId = null;
+var userId=document.getElementById("inp");
+      $scope.addMembers = function (userId) {
 
-      $scope.addMembers = function (grpId, email) {
+        var currUser = $scope.checkUser();
+        grp.once("value", function (snapshot) {
+          var i = 0;
 
-        /*//var id = $scope.checkUser();
-         ref.once("value", function (snapshot) {
+          snapshot.forEach(function (childSnapshot) {
 
+            if ((childSnapshot.val().Owner) == currUser) {
+              var GpId=Object.keys(snapshot.val())[i++];
+              var ref2 = new Firebase("https://locator-b8762.firebaseio.com/Groups/"+GpId+"/users");
 
-         var i = 0;
-         snapshot.forEach(function (childSnapshot) {
-         snapshot.forEach
-         childSnapshot.set({
-         users: {
-         userI
-         }
-         });
-         }
-         });*/
+              ref2.childByAppendingPath("users").setValue(userId);
 
 
+              console.log (ref2.val());
+            }
+
+          });
+
+        });
       }
       $scope.addGroup = function () {
 
@@ -491,5 +494,5 @@ angular.module('app.controllers', [])
       }
 
     }
-    )
+  )
 
