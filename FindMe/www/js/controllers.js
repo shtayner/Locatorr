@@ -7,7 +7,6 @@ angular.module('app.controllers', [])
       $scope.data = {};
 
 
-
       ionicMaterialInk.displayEffect();
 
 
@@ -141,6 +140,10 @@ angular.module('app.controllers', [])
               else {
                 if (index == 5) {
                   $scope.oModal5.show();
+                  document.getElementById('close').onclick = function () {
+                    document.getElementById('dvPanel').style.display = "none";
+                    document.getElementById('map').style.height = "100%";
+                  };
                 }
                 else {
                   if (index == 6) {
@@ -202,7 +205,11 @@ angular.module('app.controllers', [])
         }, 2000);
 
       };
-
+      $scope.signOut = function () {
+        firebase.auth().signOut().then(function () {
+          window.location.reload(true);
+        });
+      }
 
       /*$scope.createGroup=function(){
        createGroups.AddGroupToDB($scope.group);
@@ -323,13 +330,14 @@ angular.module('app.controllers', [])
             $scope.openModal(1);
             $timeout(function () {
               $scope.isExpanded = true;
+              ionicMaterialMotion.fadeSlideInRight();
+
+              // Set Ink
+              ionicMaterialInk.displayEffect();
             }, 300);
 
             // Set Motion
-            ionicMaterialMotion.fadeSlideInRight();
 
-            // Set Ink
-            ionicMaterialInk.displayEffect();
           }
         });
 
@@ -350,8 +358,8 @@ angular.module('app.controllers', [])
 
       // var mem = new Firebase("https://locator-b8762.firebaseio.com/Groups" + grpId);
       var ownerId = null;
-var userId=document.getElementById("inp");
-      var i=0;
+      var userId = document.getElementById("inp");
+      var i = 0;
       ref.once("value", function (snapshot) {
         $scope.users = [];
         var i = 0;
@@ -359,43 +367,49 @@ var userId=document.getElementById("inp");
           $scope.users.push({
             email: childSnapshot.val().email,
             userId: childSnapshot.val().userId,
-            latitude:childSnapshot.val().latitude,
+            latitude: childSnapshot.val().latitude,
             longitude: childSnapshot.val().longitude
           })
         });
 
       });
 
-      $scope.addMembers2= function () {
+      $scope.addMembers2 = function () {
 
-        var input = document.getElementById("addM").value ;
-        var result = angular.equals(input,$scope.users[0].email);
-        while((result==false)&&(i<$scope.users.length)){
+        var input = document.getElementById("addM").value;
+        var result = angular.equals(input, $scope.users[0].email);
+        while ((result == false) && (i < $scope.users.length)) {
           i++;
           console.log($scope.users[i].email);
 
           result = angular.equals(input, $scope.users[i].email);
           console.log(result);
         }
-        if(result==true){
-         var userId =$scope.users[i].userId;
-          var usermail=$scope.users[i].email;
-        var currUser = $scope.checkUser();
-        grp.once("value", function (snapshot) {
-          var i = 0;
-          snapshot.forEach(function (childSnapshot) {
+        if (result == true) {
+          var userId = $scope.users[i].userId;
+          var usermail = $scope.users[i].email;
+          var latitude = $scope.users[i].latitude;
+          var longitude = $scope.users[i].longitude;
 
-            if ((childSnapshot.val().Owner) == currUser) {
-              var grpId=Object.keys(snapshot.val())[i++];
+          var currUser = $scope.checkUser();
+          grp.once("value", function (snapshot) {
+            var i = 0;
+            snapshot.forEach(function (childSnapshot) {
 
-              var ref2 = new Firebase("https://locator-b8762.firebaseio.com/Groups/"+grpId+"/users");
-             ref2.child(userId).set(usermail);
+              if ((childSnapshot.val().Owner) == currUser) {
+                var grpId = Object.keys(snapshot.val())[i++];
 
-          }
-
-        });
-      });
-
+                var ref2 = new Firebase("https://locator-b8762.firebaseio.com/Groups/" + grpId + "/users");
+                ref2.child(userId).set({
+                  email: usermail,
+                  latitude: latitude,
+                  longitude: longitude
+                });
+              }
+              var us = new Firebase("https://locator-b8762.firebaseio.com/users/" + userId + "/Group");
+              us.child(childSnapshot.val().name).set(grpId);
+            });
+          });
         }
         else {
           alert("We can't find your friend , he may not have an account ! ")
@@ -408,10 +422,7 @@ var userId=document.getElementById("inp");
         var grps = grp.push();
         grps.set({
           Owner: id,
-          name: $scope.data.groupName,
-          users: {
-            ownerId: id,
-          }
+          name: $scope.data.groupName
         })
         $scope.closeModal(1);
         window.location.reload(true);
@@ -423,6 +434,7 @@ var userId=document.getElementById("inp");
         $scope.Groups = [];
         var i = 0;
         snapshot.forEach(function (childSnapshot) {
+
           var id = $scope.checkUser();
           if ((childSnapshot.val().Owner) == id) {
             $scope.Groups.push({
@@ -438,7 +450,32 @@ var userId=document.getElementById("inp");
       });
 
 
+      /*    grp.once("value", function (snapshot) {
 
+       snapshot.forEach(function (childSnapshot) {
+       var id = $scope.checkUser();
+       if ((childSnapshot.val().Owner) == id) {
+       var grpId = Object.keys(snapshot.val())[i++];
+       var ref3 = new Firebase("https://locator-b8762.firebaseio.com/Groups/" + grpId + "/users");
+       var userMem = Object.keys(childSnapshot.val())[i++];
+       var ref4 = new Firebase("https://locator-b8762.firebaseio.com/users");
+
+       ref4.once("value", function (users) {
+       $scope.memebers = [];
+       var i = 0;
+       users.forEach(function (childUsers) {
+       if ((childUsers.val().userId) == userMem) {
+       $scope.memebers.push({
+       email: childUsers.val().email,
+       latitude: childUsers.val().latitude,
+       longitude: childUsers.val().longitude
+       })
+       }
+       });
+       });
+       }
+       });
+       });*/
 
 
       $scope.watchPosition = function (userId) {
@@ -475,43 +512,179 @@ var userId=document.getElementById("inp");
 
       }
 
-      $scope.ShowMap = function () {
-        $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
-          var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-          var mapOptions = {
-            center: latLng,
-            zoom: 6,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-          };
 
-          $scope.map = new google.maps.Map(document.getElementById("ggmap"), mapOptions);
-          //To add a marker
-          var myImage = 'img/gps.png';
-          google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-            var marker = new google.maps.Marker({
-              map: $scope.map,
-              animation: google.maps.Animation.DROP,
-              position: latLng,
-              icon: myImage,
-            });
-            //on click zoom
-            google.maps.event.addListener(marker, 'click', function () {
-              $scope.map.setZoom(14);
-              $scope.map.setCenter(marker.getPosition());
-            });
-          });
+      $scope.ShowMap = function () {
+        var me = $scope.checkUser();
+        grp.once("value", function (snapshot) {
+          $scope.GroupMems = [];
+          var i = 0;
+          snapshot.forEach(function (childSnapshot) {
+
+            if ((childSnapshot.val().Owner) == me) {
+              var grpId = Object.keys(snapshot.val())[i++];
+              var ref2 = new Firebase("https://locator-b8762.firebaseio.com/Groups/" + grpId + "/users");
+              ref2.once("value", function (userShot) {
+                userShot.forEach(function (childUser) {
+                  $scope.GroupMems.push({
+                    userEmail: childUser.val().email,
+                    latitude: childUser.val().latitude,
+                    longitude: childUser.val().longitude
+
+                  });
+                });
+
+
+                $cordovaGeolocation.getCurrentPosition(options).then(function (position) {
+                  var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                  var mapOptions = {
+                    center: latLng,
+                    zoom: 6,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                  };
+
+                  $scope.map = new google.maps.Map(document.getElementById("ggmap"), mapOptions);
+                  //To add a marker
+                  var myImage = 'img/gps.png';
+                  google.maps.event.addListenerOnce($scope.map, 'idle', function () {
+                    var marker = new google.maps.Marker({
+                      map: $scope.map,
+                      animation: google.maps.Animation.DROP,
+                      position: latLng,
+                      icon: myImage,
+                    });
+                    //on click zoom
+                    google.maps.event.addListener(marker, 'click', function () {
+                      $scope.map.setZoom(14);
+                      $scope.map.setCenter(marker.getPosition());
+                    });
+                  });
 
 //addMarker
-          var latln = new google.maps.LatLng(34.7452, 10.7613);
-          google.maps.event.addListenerOnce($scope.map, 'idle', function () {
-            var marker = new google.maps.Marker({
-              map: $scope.map,
-              animation: google.maps.Animation.DROP,
-              position: latln
-            });
+                  var latln = new google.maps.LatLng(34.7452, 10.7613);
+                  google.maps.event.addListenerOnce($scope.map, 'idle', function () {
+                    var marker = new google.maps.Marker({
+                      map: $scope.map,
+                      animation: google.maps.Animation.DROP,
+                      position: latln
+                    });
 
-          })
-        })
+                  })
+                  var image = 'img/placeholder2.png';
+                  var bounds = new google.maps.LatLngBounds();
+                  var infoWindow = new google.maps.InfoWindow();
+                  var latlngbounds = new google.maps.LatLngBounds();
+                  $scope.markers = [];
+                  var infoWindow = new google.maps.InfoWindow();
+                  for (var i = 0; i < $scope.GroupMems.length; i++) {
+                    var position = new google.maps.LatLng($scope.GroupMems[i].latitude, $scope.GroupMems[i].longitude);
+                    bounds.extend(position);
+                    marker = new google.maps.Marker({
+                      position: position,
+                      map: $scope.map,
+                      title: $scope.GroupMems[i].email,
+                      animation: google.maps.Animation.DROP,
+                      icon: image,
+                      //label: labels[labelIndex++ % labels.length]
+                    });
+                    $scope.markers.push(marker);
+                    // Allow each marker to have an info window
+                    // Automatically center the map fitting all markers on the screen
+                    $scope.map.fitBounds(bounds);
+                    ////////  //distance and path////////////////////
+
+                    var directionsService = new google.maps.DirectionsService();
+                    var poly = new google.maps.Polyline({map: $scope.map, strokeColor: '#4986E7'});
+                    var directionsDisplay;
+                    directionsDisplay = new google.maps.DirectionsRenderer({'draggable': true});
+
+                    var path = new google.maps.MVCArray();
+                    var lines = [];
+                    var markerListener = google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                      var contentString =
+                        ' <h4 >' + $scope.GroupMems[i].email + '</h4>'
+                      return function () {
+                        infoWindow.setContent(contentString);
+                        infoWindow.open($scope.map, marker);
+                        var dest = marker.position;
+                        var src = latLng;
+                        document.getElementById('dvPanel').style.display = "inline";
+                        document.getElementById('dvPanel').style.paddingTop = "2%";
+                        document.getElementById('dvPanel').style.float = "left";
+                        document.getElementById('dvPanel').style.height = "40%";
+                        document.getElementById('dvPanel').style.overflow = "scroll";
+                        document.getElementById('dvPanel').style.width = "100%";
+                        document.getElementById('close').style.display = "inline";
+                        document.getElementById('ggmap').style.float = "left";
+                        document.getElementById('ggmap').style.height = "60%";
+                        document.getElementById('ggmap').style.width = "100%";
+
+
+                        directionsDisplay.setPanel(document.getElementById('dvPanel'));
+
+                        $scope.map.setCenter(marker.position);
+                        //*********DIRECTIONS AND ROUTE**********************/
+                        var request = {
+                          origin: src,
+                          destination: dest,
+                          travelMode: google.maps.TravelMode.DRIVING,
+                        };
+                        directionsDisplay.setMap($scope.map);
+                        directionsService.route(request, function (response, status) {
+                          if (status == google.maps.DirectionsStatus.OK) {
+                            directionsDisplay.setDirections(response);
+
+                          }
+
+                        });
+                        /******************************************************************************************************************/
+                        //*********DISTANCE AND DURATION**********************/
+                        var service = new google.maps.DistanceMatrixService();
+                        service.getDistanceMatrix({
+                          origins: [src],
+                          destinations: [dest],
+                          travelMode: google.maps.TravelMode.DRIVING,
+                          unitSystem: google.maps.UnitSystem.METRIC,
+                          avoidHighways: false,
+                          avoidTolls: false
+                        }, function (response, status) {
+                          if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+                            var distance = response.rows[0].elements[0].distance.text;
+                            var duration = response.rows[0].elements[0].duration.text;
+                            var dvDistance = document.getElementById("distance");
+                            dvDistance.innerHTML = "<h5>" + "with your car:" + "</h5> " + "<br/>"
+                            dvDistance.innerHTML += "Distance: " + distance + "<br />";
+                            dvDistance.innerHTML += "Duration:" + duration;
+
+                          } else {
+                            alert("Unable to find the distance via road.");
+                          }
+                        });
+
+                      }
+                    })(marker, i));
+
+                    google.maps.event.addListener(marker, 'dblclick', function () {
+                      $scope.map.setZoom(10);
+                      $scope.map.setCenter(marker.getPosition());
+
+                    });
+                    // Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
+                    var boundsListener = google.maps.event.addListener(($scope.map), 'bounds_changed', function (event) {
+                      google.maps.event.removeListener(boundsListener);
+                    });
+
+                  }
+
+
+                })
+
+
+              });
+            }
+          });
+        });
+
+
       }
 
     }
